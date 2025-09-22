@@ -7,6 +7,8 @@ import { TableKit } from '@tiptap/extension-table';
 import Image from '@tiptap/extension-image';
 import ImageResize from 'tiptap-extension-resize-image';
 import { useEditorStore } from '@/stores/use-editor-store';
+import { TextStyle, FontFamily } from '@tiptap/extension-text-style';
+import Heading from '@tiptap/extension-heading';
 
 // 在Next.js中，默认所有组件都是服务器组件，如果想要在客户端使用Tiptap，需要将组件标记为"use client"
 // 这将告诉Next.js将该组件渲染为客户端组件，而不是服务器组件
@@ -41,6 +43,7 @@ const Editor = memo(() => {
     },
     extensions: [
       StarterKit,
+      Heading,
       TaskList,
       TaskItem.configure({
         nested: true
@@ -49,7 +52,9 @@ const Editor = memo(() => {
         table: { resizable: true }
       }),
       ImageResize,
-      Image
+      Image,
+      TextStyle,
+      FontFamily
     ],
     content: `
         <table>

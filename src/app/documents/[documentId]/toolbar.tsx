@@ -1,5 +1,6 @@
 'use client';
 import { Separator } from '@/components/ui/separator';
+import { FontFamilyButton, HeadingLevelButton } from '@/extensions';
 import { cn } from '@/lib/utils';
 import { useEditorStore } from '@/stores/use-editor-store';
 import {
@@ -128,10 +129,12 @@ const ToolBar = memo(() => {
       ))}
       <Separator orientation="vertical" className="h-6! bg-neutral-300" />
       {/* Font family */}
+      <FontFamilyButton />
       <Separator orientation="vertical" className="h-6! bg-neutral-300" />
       {/* Heading */}
       <Separator orientation="vertical" className="h-6! bg-neutral-300" />
       {/* Font size */}
+      <HeadingLevelButton />
       <Separator orientation="vertical" className="h-6! bg-neutral-300" />
       {sections[1].map(item => (
         <ToolBarButton key={item.label} {...item} />
