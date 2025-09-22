@@ -6,12 +6,32 @@ import { TaskItem, TaskList } from '@tiptap/extension-list';
 import { TableKit } from '@tiptap/extension-table';
 import Image from '@tiptap/extension-image';
 import ImageResize from 'tiptap-extension-resize-image';
+import { useEditorStore } from '@/stores/use-editor-store';
 
 // 在Next.js中，默认所有组件都是服务器组件，如果想要在客户端使用Tiptap，需要将组件标记为"use client"
 // 这将告诉Next.js将该组件渲染为客户端组件，而不是服务器组件
 
 const Editor = memo(() => {
+  // 通过zustand store提供的setEditor方法，将editor实例设置到store中
+  const { setEditor } = useEditorStore();
+
   const editor = useEditor({
+    // 当editor实例创建时，将其设置到store中
+    onCreate: ({ editor }) => setEditor(editor),
+    // 当editor实例销毁时，将store中的editor实例设置为null
+    onDestroy: () => setEditor(null),
+    // 当editor实例更新时，将其设置到store中
+    onUpdate: ({ editor }) => setEditor(editor),
+    // 当editor实例的selection更新时，将其设置到store中
+    onSelectionUpdate: ({ editor }) => setEditor(editor),
+    // 当editor实例获得焦点时，将其设置到store中
+    onFocus: ({ editor }) => setEditor(editor),
+    // 当editor实例失去焦点时，将其设置到store中
+    onBlur: ({ editor }) => setEditor(editor),
+    // 当editor实例的content内容发生错误时，将其设置到store中
+    onContentError: ({ editor }) => setEditor(editor),
+    // 当editor实例的执行事务时，将其设置到store中
+    onTransaction: ({ editor }) => setEditor(editor),
     editorProps: {
       attributes: {
         style: 'padding-left:56px;padding-right:56px;',
