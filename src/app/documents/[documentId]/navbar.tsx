@@ -35,8 +35,54 @@ import {
   Undo2Icon
 } from 'lucide-react';
 import { BsFilePdf } from 'react-icons/bs';
+import { useEditorStore } from '@/stores/use-editor-store';
 
 const Navbar = memo(() => {
+  const { editor } = useEditorStore();
+
+  const insertTable = ({ rows, cols }: { rows: number; cols: number }) => {
+    editor
+      ?.chain()
+      .focus()
+      .insertTable({ rows, cols, withHeaderRow: false })
+      .run();
+  };
+
+  const FileDownload = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+  };
+
+  const onSaveJson = () => {
+    if (!editor) return;
+    const content = editor.getJSON();
+    const blob = new Blob([JSON.stringify(content)], {
+      type: 'application/json'
+    });
+    FileDownload(blob, `document.json`);
+  };
+
+  const onSaveHTML = () => {
+    if (!editor) return;
+    const content = editor.getHTML();
+    const blob = new Blob([content], {
+      type: 'text/html'
+    });
+    FileDownload(blob, `document.html`);
+  };
+
+  const onSaveText = () => {
+    if (!editor) return;
+    const content = editor.getText();
+    const blob = new Blob([JSON.stringify(content)], {
+      type: 'text/plain'
+    });
+    FileDownload(blob, `document.text`);
+  };
+
   return (
     <nav className="flex items-center justify-baseline">
       <div className="flex gap-2 items-center">
@@ -60,19 +106,19 @@ const Navbar = memo(() => {
                       Save
                     </MenubarSubTrigger>
                     <MenubarSubContent>
-                      <MenubarItem>
+                      <MenubarItem onClick={() => onSaveJson()}>
                         <FileJsonIcon className="size-4" />
                         JSON
                       </MenubarItem>
-                      <MenubarItem>
+                      <MenubarItem onClick={() => onSaveHTML()}>
                         <GlobeIcon className="size-4" />
                         HTML
                       </MenubarItem>
-                      <MenubarItem>
+                      <MenubarItem onClick={() => window.print()}>
                         <BsFilePdf className="size-4" />
                         PDF
                       </MenubarItem>
-                      <MenubarItem>
+                      <MenubarItem onClick={() => onSaveText()}>
                         <FileTextIcon className="size-4" />
                         Text
                       </MenubarItem>
@@ -103,11 +149,15 @@ const Navbar = memo(() => {
                   Edit
                 </MenubarTrigger>
                 <MenubarContent>
-                  <MenubarItem>
+                  <MenubarItem
+                    onClick={() => editor?.chain().focus().undo().run()}
+                  >
                     <Undo2Icon className="size-4" />
                     Undo<MenubarShortcut>Ctrl+Z</MenubarShortcut>
                   </MenubarItem>
-                  <MenubarItem>
+                  <MenubarItem
+                    onClick={() => editor?.chain().focus().redo().run()}
+                  >
                     <Redo2Icon className="size-4" />
                     Redo<MenubarShortcut>Ctrl+Y</MenubarShortcut>
                   </MenubarItem>
@@ -121,10 +171,26 @@ const Navbar = memo(() => {
                   <MenubarSub>
                     <MenubarSubTrigger>Table</MenubarSubTrigger>
                     <MenubarSubContent>
-                      <MenubarItem>1 x 1</MenubarItem>
-                      <MenubarItem>2 x 2</MenubarItem>
-                      <MenubarItem>3 x 3</MenubarItem>
-                      <MenubarItem>4 x 4</MenubarItem>
+                      <MenubarItem
+                        onClick={() => insertTable({ cols: 1, rows: 1 })}
+                      >
+                        1 x 1
+                      </MenubarItem>
+                      <MenubarItem
+                        onClick={() => insertTable({ rows: 2, cols: 2 })}
+                      >
+                        2 x 2
+                      </MenubarItem>
+                      <MenubarItem
+                        onClick={() => insertTable({ rows: 3, cols: 3 })}
+                      >
+                        3 x 3
+                      </MenubarItem>
+                      <MenubarItem
+                        onClick={() => insertTable({ rows: 4, cols: 4 })}
+                      >
+                        4 x 4
+                      </MenubarItem>
                     </MenubarSubContent>
                   </MenubarSub>
                 </MenubarContent>
@@ -140,26 +206,46 @@ const Navbar = memo(() => {
                       Text
                     </MenubarSubTrigger>
                     <MenubarSubContent>
-                      <MenubarItem>
+                      <MenubarItem
+                        onClick={() =>
+                          editor?.chain().focus().toggleBold().run()
+                        }
+                      >
                         <BoldIcon className="size-4" />
                         Bold<MenubarShortcut>Ctrl+B</MenubarShortcut>
                       </MenubarItem>
-                      <MenubarItem>
+                      <MenubarItem
+                        onClick={() =>
+                          editor?.chain().focus().toggleItalic().run()
+                        }
+                      >
                         <ItalicIcon className="size-4" />
                         Italic<MenubarShortcut>Ctrl+I</MenubarShortcut>
                       </MenubarItem>
-                      <MenubarItem>
+                      <MenubarItem
+                        onClick={() =>
+                          editor?.chain().focus().toggleUnderline().run()
+                        }
+                      >
                         <UnderlineIcon className="size-4" />
                         Underline<MenubarShortcut>Ctrl+U</MenubarShortcut>
                       </MenubarItem>
-                      <MenubarItem>
+                      <MenubarItem
+                        onClick={() =>
+                          editor?.chain().focus().toggleStrike().run()
+                        }
+                      >
                         <StrikethroughIcon className="size-4" />
                         <span>Strikethrough &nbsp;&nbsp;</span>
                         <MenubarShortcut>Ctrl+Shift+S</MenubarShortcut>
                       </MenubarItem>
                     </MenubarSubContent>
                   </MenubarSub>
-                  <MenubarItem>
+                  <MenubarItem
+                    onClick={() =>
+                      editor?.chain().focus().unsetAllMarks().run()
+                    }
+                  >
                     <RemoveFormattingIcon className="size-4" />
                     Clear Formatting
                   </MenubarItem>
