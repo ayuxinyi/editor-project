@@ -7,3 +7,4 @@ export * from './text-color-button';
 export * from './link-button';
 export * from './list-button';
 export * from './font-size-button';
+export * from './line-height-button';

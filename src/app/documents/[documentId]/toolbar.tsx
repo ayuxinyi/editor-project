@@ -5,12 +5,13 @@ import {
   FontFamilyButton,
   FontSizeButton,
   HeadingLevelButton,
-  ListButton
+  ListButton,
+  HighLightColorButton,
+  ImageButton,
+  LinkButton,
+  TextColorButton,
+  LineHeightButton
 } from '@/components/extensions';
-import { HighLightColorButton } from '@/components/extensions';
-import { ImageButton } from '@/components/extensions';
-import { LinkButton } from '@/components/extensions';
-import { TextColorButton } from '@/components/extensions';
 import { cn } from '@/lib/utils';
 import { useEditorStore } from '@/stores/use-editor-store';
 import {
@@ -26,6 +27,11 @@ import {
   UnderlineIcon,
   Undo2Icon
 } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from '@/components/ui/tooltip';
 import React, { memo } from 'react';
 
 interface ToolBarButtonProps {
@@ -39,18 +45,26 @@ type ToolSectionType = ToolBarButtonProps & { label: string };
 const ToolBarButton = ({
   onClick,
   isActive,
-  icon: Icon
-}: ToolBarButtonProps) => {
+  icon: Icon,
+  label
+}: ToolSectionType) => {
   return (
-    <button
-      onClick={onClick}
-      className={cn(
-        'cursor-pointer text-sm h-7 min-w-7 flex items-center justify-center rounded-sm hover:bg-neutral-200/80',
-        isActive && 'bg-neutral-200/80'
-      )}
-    >
-      <Icon className="size-4" />
-    </button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          onClick={onClick}
+          className={cn(
+            'cursor-pointer text-sm h-7 min-w-7 flex items-center justify-center rounded-sm hover:bg-neutral-200/80',
+            isActive && 'bg-neutral-200/80'
+          )}
+        >
+          <Icon className="size-4" />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <span>{label}</span>
+      </TooltipContent>
+    </Tooltip>
   );
 };
 
@@ -164,6 +178,7 @@ const ToolBar = memo(() => {
       {/* Align */}
       <AlignButton />
       {/* Line height */}
+      <LineHeightButton />
       {/* List */}
       <ListButton />
       {sections[2].map(item => (

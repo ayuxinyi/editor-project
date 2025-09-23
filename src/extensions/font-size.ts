@@ -16,7 +16,16 @@ declare module '@tiptap/core' {
   }
 }
 
-export const FontSizeExtension = Extension.create({
+interface FontSizeOptions {
+  /**
+   * The types where the font size attribute can be applied.
+   * @default ['textStyle']
+   * @example ['textStyle']
+   */
+  types: string[];
+}
+
+export const FontSizeExtension = Extension.create<FontSizeOptions>({
   name: 'fontSize', // 插件名称
   // 插件选项
   addOptions() {

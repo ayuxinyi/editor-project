@@ -12,7 +12,8 @@ import Heading from '@tiptap/extension-heading';
 import Highlight from '@tiptap/extension-highlight';
 import Link from '@tiptap/extension-link';
 import TextAlign from '@tiptap/extension-text-align';
-import { FontSizeExtension } from '@/extensions/customExtensions/font-size';
+import { FontSizeExtension, LineHeightExtension } from '@/extensions';
+import Ruler from './ruler';
 
 // 在Next.js中，默认所有组件都是服务器组件，如果想要在客户端使用Tiptap，需要将组件标记为"use client"
 // 这将告诉Next.js将该组件渲染为客户端组件，而不是服务器组件
@@ -72,6 +73,7 @@ const Editor = memo(() => {
         types: ['heading', 'paragraph']
       }),
       FontSizeExtension,
+      LineHeightExtension,
       ImageResize
     ],
     content: `
@@ -96,6 +98,7 @@ const Editor = memo(() => {
 
   return (
     <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:bg-white print:overflow-visible">
+      <Ruler />
       <div className="min-w-max flex justify-center w-[816px] py-4 print:py-0 mx-auto print:w-full print:min-w-0">
         <EditorContent editor={editor} />
       </div>
