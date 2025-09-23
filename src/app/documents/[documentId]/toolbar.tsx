@@ -1,6 +1,16 @@
 'use client';
 import { Separator } from '@/components/ui/separator';
-import { FontFamilyButton, HeadingLevelButton } from '@/extensions';
+import {
+  AlignButton,
+  FontFamilyButton,
+  FontSizeButton,
+  HeadingLevelButton,
+  ListButton
+} from '@/components/extensions';
+import { HighLightColorButton } from '@/components/extensions';
+import { ImageButton } from '@/components/extensions';
+import { LinkButton } from '@/components/extensions';
+import { TextColorButton } from '@/components/extensions';
 import { cn } from '@/lib/utils';
 import { useEditorStore } from '@/stores/use-editor-store';
 import {
@@ -134,6 +144,7 @@ const ToolBar = memo(() => {
       {/* Heading */}
       <Separator orientation="vertical" className="h-6! bg-neutral-300" />
       {/* Font size */}
+      <FontSizeButton />
       <HeadingLevelButton />
       <Separator orientation="vertical" className="h-6! bg-neutral-300" />
       {sections[1].map(item => (
@@ -141,14 +152,20 @@ const ToolBar = memo(() => {
       ))}
       <Separator orientation="vertical" className="h-6! bg-neutral-300" />
       {/* Text color */}
+      <TextColorButton />
       <Separator orientation="vertical" className="h-6! bg-neutral-300" />
       {/* Highlight color */}
+      <HighLightColorButton />
       <Separator orientation="vertical" className="h-6! bg-neutral-300" />
       {/* Link */}
+      <LinkButton />
       {/* Image */}
+      <ImageButton />
       {/* Align */}
+      <AlignButton />
       {/* Line height */}
       {/* List */}
+      <ListButton />
       {sections[2].map(item => (
         <ToolBarButton key={item.label} {...item} />
       ))}

@@ -7,8 +7,12 @@ import { TableKit } from '@tiptap/extension-table';
 import Image from '@tiptap/extension-image';
 import ImageResize from 'tiptap-extension-resize-image';
 import { useEditorStore } from '@/stores/use-editor-store';
-import { TextStyle, FontFamily } from '@tiptap/extension-text-style';
+import { TextStyle, FontFamily, Color } from '@tiptap/extension-text-style';
 import Heading from '@tiptap/extension-heading';
+import Highlight from '@tiptap/extension-highlight';
+import Link from '@tiptap/extension-link';
+import TextAlign from '@tiptap/extension-text-align';
+import { FontSizeExtension } from '@/extensions/customExtensions/font-size';
 
 // 在Next.js中，默认所有组件都是服务器组件，如果想要在客户端使用Tiptap，需要将组件标记为"use client"
 // 这将告诉Next.js将该组件渲染为客户端组件，而不是服务器组件
@@ -51,10 +55,24 @@ const Editor = memo(() => {
       TableKit.configure({
         table: { resizable: true }
       }),
-      ImageResize,
       Image,
       TextStyle,
-      FontFamily
+      FontFamily,
+      Color,
+      Highlight.configure({
+        // 开启多颜色高亮
+        multicolor: true
+      }),
+      Link.configure({
+        openOnClick: false,
+        autolink: true,
+        defaultProtocol: 'https'
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph']
+      }),
+      FontSizeExtension,
+      ImageResize
     ],
     content: `
         <table>
