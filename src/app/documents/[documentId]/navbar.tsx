@@ -25,7 +25,6 @@ import {
   FileTextIcon,
   GlobeIcon,
   ItalicIcon,
-  Menu,
   PrinterIcon,
   Redo2Icon,
   RemoveFormattingIcon,
