@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { ConvexClientProvider } from '@/providers/convex-client-provider';
+import { Toaster } from '@/components/ui/sonner';
 
 const inter = Inter({
   subsets: ['latin']
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <Toaster richColors />
         {/* Nuqs客户端，用于处理搜索参数 */}
         <NuqsAdapter>
           {/* convex 客户端上下文，用于在客户端调用 convex 函数，实现Api请求 */}

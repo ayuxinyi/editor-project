@@ -12,6 +12,8 @@ import { templates } from '@/constants/templates';
 import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { ConvexError } from 'convex/values';
 
 const TemplatesGallery = memo(() => {
   const router = useRouter();
@@ -22,8 +24,10 @@ const TemplatesGallery = memo(() => {
     setIsCreating(true);
     create({ title, initialContent })
       .then(documentId => {
+        toast.success('创建成功');
         router.push(`/document/${documentId}`);
       })
+      .catch((err: ConvexError<'documents'>) => toast.error(err.data))
       .finally(() => {
         setIsCreating(false);
       });

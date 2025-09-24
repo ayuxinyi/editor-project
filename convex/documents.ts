@@ -12,7 +12,6 @@ export const get = query({
   // 定义查询处理函数，接收Convex上下文参数
   handler: async (ctx, { search, paginationOpts }) => {
     const user = await ctx.auth.getUserIdentity();
-    console.log('🚀 ~ user:', user);
     if (!user) {
       throw new ConvexError('未经授权');
     }
@@ -113,7 +112,7 @@ export const removeById = mutation({
     const isOwner = document.ownerId === user.subject;
     const isAdmin = organizationRole === 'org:admin';
     if (!isOwner && !isAdmin) {
-      throw new ConvexError('没有权限删除文档');
+      throw new ConvexError('很抱歉，您没有权限删除文档！');
     }
     return await ctx.db.delete(args.id);
   }

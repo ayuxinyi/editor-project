@@ -15,6 +15,8 @@ import {
 } from './ui/dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
+import { toast } from 'sonner';
+import { ConvexError } from 'convex/values';
 
 interface RenameDialogProps {
   documentId: Id<'documents'>;
@@ -33,7 +35,11 @@ const RenameDialog: FC<PropsWithChildren<RenameDialogProps>> = memo(
       ev.preventDefault();
       setIsUpdating(true);
       update({ id: documentId, title: title.trim() || '未命名' })
-        .then(() => setOpen(false))
+        .then(() => {
+          toast.success('重命名成功');
+          setOpen(false);
+        })
+        .catch((err: ConvexError<'documents'>) => toast.error(err.data))
         .finally(() => {
           setIsUpdating(false);
         });

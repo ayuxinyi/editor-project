@@ -15,6 +15,8 @@ import {
 import { Id } from '../../convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
+import { toast } from 'sonner';
+import { ConvexError } from 'convex/values';
 
 interface RemoveDialogProps {
   documentId: Id<'documents'>;
@@ -50,9 +52,16 @@ const RemoveDialog: FC<PropsWithChildren<RemoveDialogProps>> = memo(
               onClick={e => {
                 e.stopPropagation();
                 setIsRemoving(true);
-                remove({ id: documentId }).finally(() => {
-                  setIsRemoving(false);
-                });
+                remove({ id: documentId })
+                  .then(() => {
+                    toast.success('删除成功');
+                  })
+                  .catch((err: ConvexError<'documents'>) =>
+                    toast.error(err.data)
+                  )
+                  .finally(() => {
+                    setIsRemoving(false);
+                  });
               }}
             >
               删除
