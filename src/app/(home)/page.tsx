@@ -2,13 +2,16 @@
 import { memo } from 'react';
 import NavBar from './navbar';
 import TemplatesGallery from './templates-gallery';
-import { useQuery } from 'convex/react';
+import { usePaginatedQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
+import DocumentsTable from './documents-table';
 
 export default memo(function Home() {
-  const documents = useQuery(api.documents.get);
-
-  if (!documents) return <div>Loading...</div>;
+  const { results, status, loadMore } = usePaginatedQuery(
+    api.documents.get,
+    {},
+    { initialNumItems: 5 }
+  );
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -19,10 +22,11 @@ export default memo(function Home() {
       <div className="mt-16">
         {/* 模板列表 */}
         <TemplatesGallery />
-        {documents &&
-          documents.map(document => (
-            <span key={document._id}>{document.title}</span>
-          ))}
+        <DocumentsTable
+          documents={results}
+          loadMore={loadMore}
+          status={status}
+        />
       </div>
     </div>
   );
