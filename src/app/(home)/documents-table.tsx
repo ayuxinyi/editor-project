@@ -66,7 +66,11 @@ const DocumentsTable = memo(
             onClick={() => loadMore(5)}
             disabled={status !== 'CanLoadMore'}
           >
-            {status === 'CanLoadMore' ? 'Load More' : 'End of results'}
+            {status === 'CanLoadMore'
+              ? 'Load More'
+              : documents?.length === 0
+              ? ''
+              : 'End of results'}
           </Button>
         </div>
       </div>

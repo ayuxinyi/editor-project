@@ -6,14 +6,34 @@ import { paginationOptsValidator } from 'convex/server';
 export const get = query({
   args: {
     // 分页参数，用于分页查询文档数据
-    paginationOpts: paginationOptsValidator
+    paginationOpts: paginationOptsValidator,
+    search: v.optional(v.string())
   },
   // 定义查询处理函数，接收Convex上下文参数
-  handler: async (ctx, args) => {
+  handler: async (ctx, { search, paginationOpts }) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user) {
+      throw new ConvexError('未经授权');
+    }
+
+    // 如果有搜索条件，使用搜索索引进行查询
+    if (search) {
+      return await ctx.db
+        .query('documents')
+        .withSearchIndex('search_title', q =>
+          q.search('title', search).eq('ownerId', user.subject)
+        )
+        .paginate(paginationOpts);
+    }
+
     // 查询documents表中的所有文档数据并返回结果集合
     // 使用ctx.db.query()方法查询指定表
     // collect()方法用于获取查询结果的完整集合
-    return await ctx.db.query('documents').paginate(args.paginationOpts);
+    return await ctx.db
+      .query('documents')
+      // 按ownerId索引查询，仅返回当前用户的文档
+      .withIndex('by_owner_id', q => q.eq('ownerId', user.subject))
+      .paginate(paginationOpts);
   }
 });
 
