@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { memo } from 'react';
 import SearchInput from './search-input';
+import { UserButton } from '@clerk/clerk-react';
 
 const NavBar = memo(() => {
   return (
@@ -13,7 +14,7 @@ const NavBar = memo(() => {
         <h3 className="text-xl">Docs</h3>
       </div>
       <SearchInput />
-      <div></div>
+      <UserButton />
     </nav>
   );
 });
