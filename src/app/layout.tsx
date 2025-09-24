@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
+import { ConvexClientProvider } from '@/providers/convex-client-provider';
 
 const inter = Inter({
   subsets: ['latin']
@@ -20,7 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NuqsAdapter>{children}</NuqsAdapter>
+        {/* Nuqs客户端，用于处理搜索参数 */}
+        <NuqsAdapter>
+          {/* convex 客户端上下文，用于在客户端调用 convex 函数，实现Api请求 */}
+          <ConvexClientProvider>{children}</ConvexClientProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );
