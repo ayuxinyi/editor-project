@@ -12,11 +12,27 @@ export const get = query({
   // 定义查询处理函数，接收Convex上下文参数
   handler: async (ctx, { search, paginationOpts }) => {
     const user = await ctx.auth.getUserIdentity();
+    console.log('🚀 ~ user:', user);
     if (!user) {
       throw new ConvexError('未经授权');
     }
 
-    // 如果有搜索条件，使用搜索索引进行查询
+    const organizationId = (user.organization_id ?? undefined) as
+      | string
+      | undefined;
+
+    // 如果有搜索条件且有组织ID，使用组织ID进行查询
+    if (search && organizationId) {
+      return await ctx.db
+        .query('documents')
+        // 应用搜索索引，根据标题搜索并过滤出当前组织的文档
+        .withSearchIndex('search_title', q =>
+          q.search('title', search).eq('organizationId', organizationId)
+        )
+        .paginate(paginationOpts);
+    }
+
+    // 当前用户的文档，并通过查询条件进行查询
     if (search) {
       return await ctx.db
         .query('documents')
@@ -26,6 +42,18 @@ export const get = query({
         .paginate(paginationOpts);
     }
 
+    // 当前组织的文档
+    if (organizationId) {
+      return await ctx.db
+        .query('documents')
+        // 按organizationId索引查询，仅返回当前组织的文档
+        .withIndex('by_organization_id', q =>
+          q.eq('organizationId', organizationId)
+        )
+        .paginate(paginationOpts);
+    }
+
+    // 当前用户的文档
     // 查询documents表中的所有文档数据并返回结果集合
     // 使用ctx.db.query()方法查询指定表
     // collect()方法用于获取查询结果的完整集合
@@ -49,11 +77,17 @@ export const create = mutation({
     if (!user) {
       throw new ConvexError('未经授权');
     }
+
+    const organizationId = (user.organization_id ?? undefined) as
+      | string
+      | undefined;
+
     // 插入新文档到documents表中，包含标题、所有者ID和初始内容
     return await ctx.db.insert('documents', {
       title: args.title ?? 'Untitled document',
       ownerId: user.subject,
-      initialContent: args.initialContent
+      initialContent: args.initialContent,
+      organizationId
     });
   }
 });
@@ -67,12 +101,18 @@ export const removeById = mutation({
     if (!user) {
       throw new ConvexError('未经授权');
     }
+
+    const organizationRole = (user.organization_role ?? undefined) as
+      | string
+      | undefined;
+
     const document = await ctx.db.get(args.id);
     if (!document) {
       throw new ConvexError('文档不存在');
     }
     const isOwner = document.ownerId === user.subject;
-    if (!isOwner) {
+    const isAdmin = organizationRole === 'org:admin';
+    if (!isOwner && !isAdmin) {
       throw new ConvexError('没有权限删除文档');
     }
     return await ctx.db.delete(args.id);

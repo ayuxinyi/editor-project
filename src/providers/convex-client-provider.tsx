@@ -1,12 +1,7 @@
 'use client';
 import { ReactNode } from 'react';
 import { ConvexProviderWithClerk } from 'convex/react-clerk';
-import {
-  ClerkProvider,
-  useAuth,
-  SignIn,
-  ClerkLoading
-} from '@clerk/clerk-react';
+import { ClerkProvider, useAuth, SignIn } from '@clerk/clerk-react';
 import {
   ConvexReactClient,
   // 通过身份验证
@@ -37,9 +32,7 @@ export function ConvexClientProvider({ children }: { children: ReactNode }) {
           </div>
         </Unauthenticated>
         <AuthLoading>
-          <ClerkLoading>
-            <FullscreenLoader label="身份验证中" />
-          </ClerkLoading>
+          <FullscreenLoader label="身份验证中" />
         </AuthLoading>
       </ConvexProviderWithClerk>
     </ClerkProvider>
