@@ -7,7 +7,7 @@ import { ChangeEvent, FormEvent, memo, useRef, useState } from 'react';
 
 const SearchInput = memo(() => {
   const [value, setValue] = useState<string>('');
-  const [search, setSearch] = useSearchParam('search');
+  const [, setSearch] = useSearchParam('search');
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
