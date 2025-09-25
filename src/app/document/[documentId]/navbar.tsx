@@ -37,6 +37,7 @@ import {
 import { BsFilePdf } from 'react-icons/bs';
 import { useEditorStore } from '@/stores/use-editor-store';
 import { OrganizationSwitcher, UserButton } from '@clerk/clerk-react';
+import Avatars from './avatars';
 
 const Navbar = memo(() => {
   const { editor } = useEditorStore();
@@ -257,6 +258,7 @@ const Navbar = memo(() => {
         </div>
       </div>
       <div className="flex gap-3 items-center pl-6">
+        <Avatars />
         <OrganizationSwitcher
           // 这可以确保我们每次创建组织、退出组织、选择组织或个人后都回到首页，从而刷新我们的jwt令牌
           // 创建组织后回到首页

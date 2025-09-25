@@ -44,7 +44,8 @@ export async function POST(req: Request) {
   // 为Liveblocks会话创建一个会话
   const session = liveblocks.prepareSession(user.id, {
     userInfo: {
-      name: user.fullName ?? 'Anonymous',
+      name:
+        user.fullName ?? user.primaryEmailAddress?.emailAddress ?? 'Anonymous',
       avatar: user.imageUrl
     }
   });

@@ -1,6 +1,5 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { error } from 'console';
 import { AlertTriangleIcon } from 'lucide-react';
 import Link from 'next/link';
 import React, { memo } from 'react';
@@ -27,7 +26,7 @@ const Error = memo(
             </h2>
             <p>{error.message}</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 justify-center">
             <Button onClick={reset} className="font-me px-6">
               刷 新
             </Button>
