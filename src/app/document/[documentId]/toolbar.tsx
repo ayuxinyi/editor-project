@@ -128,8 +128,9 @@ const ToolBar = memo(() => {
       {
         label: '评论',
         icon: MessageSquarePlusIcon,
-        onClick: () => console.log('评论'),
-        isActive: false
+        // @ts-expect-error 类型“ChainedCommands”上不存在属性“addPendingComment”。
+        onClick: () => editor?.chain().focus().addPendingComment().run(),
+        isActive: editor?.isActive('liveblocksCommentMark')
       },
       {
         label: '列表',

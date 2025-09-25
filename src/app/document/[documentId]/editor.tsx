@@ -1,6 +1,10 @@
 'use client';
 import React, { memo } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
+import {
+  useLiveblocksExtension,
+  FloatingToolbar
+} from '@liveblocks/react-tiptap';
+import { useEditor, EditorContent, Extension } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { TaskItem, TaskList } from '@tiptap/extension-list';
 import { TableKit } from '@tiptap/extension-table';
@@ -14,6 +18,7 @@ import Link from '@tiptap/extension-link';
 import TextAlign from '@tiptap/extension-text-align';
 import { FontSizeExtension, LineHeightExtension } from '@/extensions';
 import Ruler from './ruler';
+import { Threads } from './threads';
 
 // 在Next.js中，默认所有组件都是服务器组件，如果想要在客户端使用Tiptap，需要将组件标记为"use client"
 // 这将告诉Next.js将该组件渲染为客户端组件，而不是服务器组件
@@ -21,6 +26,8 @@ import Ruler from './ruler';
 const Editor = memo(() => {
   // 通过zustand store提供的setEditor方法，将editor实例设置到store中
   const { setEditor } = useEditorStore();
+
+  const liveblocks = useLiveblocksExtension();
 
   const editor = useEditor({
     // 当editor实例创建时，将其设置到store中
@@ -47,6 +54,7 @@ const Editor = memo(() => {
       }
     },
     extensions: [
+      liveblocks as unknown as Extension,
       StarterKit,
       Heading,
       TaskList,
@@ -86,6 +94,7 @@ const Editor = memo(() => {
       <Ruler />
       <div className="min-w-max flex justify-center w-[816px] py-4 print:py-0 mx-auto print:w-full print:min-w-0">
         <EditorContent editor={editor} />
+        <Threads editor={editor} />
       </div>
     </div>
   );

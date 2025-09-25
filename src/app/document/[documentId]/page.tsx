@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import Editor from './editor';
 import ToolBar from './toolbar';
 import Navbar from './navbar';
+import { Room } from './room';
 
 interface DocumentIdParams {
   params: Promise<{ documentId: string }>;
@@ -23,7 +24,9 @@ export default memo(async function DocumentIdPage({
         <ToolBar />
       </div>
       <div className="pt-[106px] print:pt-0">
-        <Editor />
+        <Room>
+          <Editor />
+        </Room>
       </div>
     </div>
   );
