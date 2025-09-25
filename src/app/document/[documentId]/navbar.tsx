@@ -39,9 +39,34 @@ import { useEditorStore } from '@/stores/use-editor-store';
 import { OrganizationSwitcher, UserButton } from '@clerk/clerk-react';
 import Avatars from './avatars';
 import Inbox from './inbox';
+import { Doc } from '../../../../convex/_generated/dataModel';
+import { useMutation } from 'convex/react';
+import { api } from '../../../../convex/_generated/api';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import RemoveDialog from '@/components/remove-dialog';
+import RenameDialog from '@/components/rename-dialog';
 
-const Navbar = memo(() => {
+interface NavbarProps {
+  data: Doc<'documents'>;
+}
+
+const Navbar = memo(({ data }: NavbarProps) => {
   const { editor } = useEditorStore();
+  const router = useRouter();
+
+  const mutation = useMutation(api.documents.create);
+
+  const onNewDocument = () => {
+    mutation({ title: 'Untitled Document', initialContent: '' })
+      .then(id => {
+        toast.success('文档创建成功');
+        router.push(`/document/${id}`);
+      })
+      .catch(() => {
+        toast.error('文档创建失败');
+      });
+  };
 
   const insertTable = ({ rows, cols }: { rows: number; cols: number }) => {
     editor
@@ -65,7 +90,7 @@ const Navbar = memo(() => {
     const blob = new Blob([JSON.stringify(content)], {
       type: 'application/json'
     });
-    FileDownload(blob, `document.json`);
+    FileDownload(blob, `${data.title}.json`);
   };
 
   const onSaveHTML = () => {
@@ -74,7 +99,7 @@ const Navbar = memo(() => {
     const blob = new Blob([content], {
       type: 'text/html'
     });
-    FileDownload(blob, `document.html`);
+    FileDownload(blob, `${data.title}.html`);
   };
 
   const onSaveText = () => {
@@ -83,7 +108,7 @@ const Navbar = memo(() => {
     const blob = new Blob([JSON.stringify(content)], {
       type: 'text/plain'
     });
-    FileDownload(blob, `document.text`);
+    FileDownload(blob, `${data.title}.txt`);
   };
 
   return (
@@ -94,7 +119,7 @@ const Navbar = memo(() => {
         </Link>
         <div className="flex flex-col">
           {/* DOcumentInput */}
-          <DocumentInput />
+          <DocumentInput title={data.title} id={data._id} />
           {/* MenuBar */}
           <div className="flex">
             <Menubar className="border-none bg-transparent shadow-none h-auto p-0">
@@ -127,19 +152,33 @@ const Navbar = memo(() => {
                       </MenubarItem>
                     </MenubarSubContent>
                   </MenubarSub>
-                  <MenubarItem>
+                  <MenubarItem onClick={onNewDocument}>
                     <FilePlusIcon className="size-4" />
                     New Document
                   </MenubarItem>
                   <MenubarSeparator />
-                  <MenubarItem>
-                    <FilePenIcon className="size-4" />
-                    Rename
-                  </MenubarItem>
-                  <MenubarItem>
-                    <TrashIcon className="size-4" />
-                    Remove
-                  </MenubarItem>
+                  <RenameDialog documentId={data._id} initialTitle={data.title}>
+                    <MenubarItem
+                      onSelect={e => {
+                        e.preventDefault();
+                      }}
+                      onClick={e => e.stopPropagation()}
+                    >
+                      <FilePenIcon className="size-4" />
+                      Rename
+                    </MenubarItem>
+                  </RenameDialog>
+                  <RemoveDialog documentId={data._id}>
+                    <MenubarItem
+                      onSelect={e => {
+                        e.preventDefault();
+                      }}
+                      onClick={e => e.stopPropagation()}
+                    >
+                      <TrashIcon className="size-4" />
+                      Remove
+                    </MenubarItem>
+                  </RemoveDialog>
                   <MenubarSeparator />
                   <MenubarItem onClick={() => window.print()}>
                     <PrinterIcon className="size-4" />

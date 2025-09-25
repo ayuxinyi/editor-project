@@ -1,5 +1,5 @@
 'use client';
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useLiveblocksExtension } from '@liveblocks/react-tiptap';
 import { useEditor, EditorContent, Extension } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -17,19 +17,28 @@ import { FontSizeExtension, LineHeightExtension } from '@/extensions';
 import Ruler from './ruler';
 import { Threads } from './threads';
 import { useStorage } from '@liveblocks/react/suspense';
+import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from '@/constants/margins';
 
 // 在Next.js中，默认所有组件都是服务器组件，如果想要在客户端使用Tiptap，需要将组件标记为"use client"
 // 这将告诉Next.js将该组件渲染为客户端组件，而不是服务器组件
 
-const Editor = memo(() => {
+interface EditorProps {
+  initialContent?: string;
+}
+
+const Editor = memo(({ initialContent }: EditorProps) => {
   // 通过zustand store提供的setEditor方法，将editor实例设置到store中
   const { setEditor } = useEditorStore();
 
   // 从存储中获取文档的左侧和右侧边距
-  const leftMargin = useStorage(root => root.leftMargin);
-  const rightMargin = useStorage(root => root.rightMargin);
+  const leftMargin = useStorage(root => root.leftMargin) ?? LEFT_MARGIN_DEFAULT;
+  const rightMargin =
+    useStorage(root => root.rightMargin) ?? RIGHT_MARGIN_DEFAULT;
 
-  const liveblocks = useLiveblocksExtension();
+  const liveblocks = useLiveblocksExtension({
+    // 开启离线支持实验性功能
+    offlineSupport_experimental: true
+  });
 
   const editor = useEditor({
     // 当editor实例创建时，将其设置到store中
@@ -50,9 +59,7 @@ const Editor = memo(() => {
     onTransaction: ({ editor }) => setEditor(editor),
     editorProps: {
       attributes: {
-        style: `padding-left:${leftMargin ?? 56}px;padding-right:${
-          rightMargin ?? 56
-        }px;`,
+        style: `padding-left:${leftMargin}px;padding-right:${rightMargin}px;`,
         class:
           'focus:outline-none print:border-0 bg-white border border-[#C7C7C7] flex flex-col min-h-[1054px] w-[816px] pt-10 pr-14 pb-10 cursor-text'
       }
@@ -88,10 +95,16 @@ const Editor = memo(() => {
       LineHeightExtension,
       ImageResize
     ],
-    content: '',
     // Don't render immediately on the server to avoid SSR issues
     immediatelyRender: false
   });
+
+  // 在编辑器创建后设置初始内容
+  useEffect(() => {
+    if (editor && initialContent && editor.isEmpty) {
+      editor.commands.setContent(initialContent);
+    }
+  }, [editor, initialContent]);
 
   return (
     <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:bg-white print:overflow-visible">

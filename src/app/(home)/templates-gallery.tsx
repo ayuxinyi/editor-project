@@ -54,7 +54,10 @@ const TemplatesGallery = memo(() => {
                   <button
                     disabled={isCreating}
                     onClick={() => {
-                      onTemplateClick(template.label, '');
+                      onTemplateClick(
+                        template.label,
+                        template?.initialContent ?? ''
+                      );
                     }}
                     style={{
                       backgroundImage: `url(${template.imageUrl})`,

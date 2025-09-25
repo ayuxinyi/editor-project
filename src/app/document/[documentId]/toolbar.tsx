@@ -70,7 +70,6 @@ const ToolBarButton = ({
 
 const ToolBar = memo(() => {
   const { editor } = useEditorStore();
-  console.log('🚀 ~ editor:', editor);
 
   const sections: ToolSectionType[][] = [
     [

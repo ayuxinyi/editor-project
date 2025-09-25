@@ -161,6 +161,10 @@ export const getById = query({
     id: v.id('documents')
   },
   async handler(ctx, { id }) {
-    return await ctx.db.get(id);
+    const document = await ctx.db.get(id);
+    // if (!document) {
+    //   throw new ConvexError('文档不存在');
+    // }
+    return document || null;
   }
 });

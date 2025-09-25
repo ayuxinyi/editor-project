@@ -2,6 +2,7 @@ import { Liveblocks } from '@liveblocks/node';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '../../../../convex/_generated/api';
+import { randomColor } from '@/utils/random-color';
 
 // 初始化Convex客户端
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
@@ -41,12 +42,14 @@ export async function POST(req: Request) {
     return new Response('很抱歉，您没有权限访问此文档', { status: 401 });
   }
 
+  const name =
+    user.fullName ?? user.primaryEmailAddress?.emailAddress ?? 'Anonymous';
   // 为Liveblocks会话创建一个会话
   const session = liveblocks.prepareSession(user.id, {
     userInfo: {
-      name:
-        user.fullName ?? user.primaryEmailAddress?.emailAddress ?? 'Anonymous',
-      avatar: user.imageUrl
+      name,
+      avatar: user.imageUrl,
+      color: randomColor(name)
     }
   });
   // 为Liveblocks会话添加权限

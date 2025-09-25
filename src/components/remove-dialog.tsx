@@ -17,6 +17,7 @@ import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { toast } from 'sonner';
 import { ConvexError } from 'convex/values';
+// import { useRouter } from 'next/navigation';
 
 interface RemoveDialogProps {
   documentId: Id<'documents'>;
@@ -24,6 +25,7 @@ interface RemoveDialogProps {
 
 const RemoveDialog: FC<PropsWithChildren<RemoveDialogProps>> = memo(
   ({ documentId, children }) => {
+    // const router = useRouter();
     const remove = useMutation(api.documents.removeById);
     const [isRemoving, setIsRemoving] = useState(false);
 
@@ -55,6 +57,7 @@ const RemoveDialog: FC<PropsWithChildren<RemoveDialogProps>> = memo(
                 remove({ id: documentId })
                   .then(() => {
                     toast.success('删除成功');
+                    // router.push('/');
                   })
                   .catch((err: ConvexError<'documents'>) =>
                     toast.error(err.data)

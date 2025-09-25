@@ -11,6 +11,7 @@ import FullscreenLoader from '@/components/fullscreen-loader';
 import { getDocuments, getUsers } from './action';
 import { toast } from 'sonner';
 import { Id } from '../../../../convex/_generated/dataModel';
+import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from '@/constants/margins';
 
 export function Room({ children }: { children: ReactNode }) {
   const params = useParams<{ documentId: string }>();
@@ -20,6 +21,7 @@ export function Room({ children }: { children: ReactNode }) {
     id: string;
     name: string;
     avatar: string;
+    color: string;
   };
 
   // 定义用户列表状态
@@ -85,10 +87,13 @@ export function Room({ children }: { children: ReactNode }) {
       <RoomProvider
         id={params.documentId}
         // 定义房间初始存储，用于设置文档的左侧和右侧边距
-        initialStorage={{ leftMargin: 56, rightMargin: 56 }}
+        initialStorage={{
+          leftMargin: LEFT_MARGIN_DEFAULT,
+          rightMargin: RIGHT_MARGIN_DEFAULT
+        }}
       >
         <ClientSideSuspense
-          fallback={<FullscreenLoader label="文档加载中..." />}
+          fallback={<FullscreenLoader label="会话加载中..." />}
         >
           {children}
         </ClientSideSuspense>

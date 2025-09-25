@@ -1,33 +1,33 @@
 import React, { memo } from 'react';
-import Editor from './editor';
-import ToolBar from './toolbar';
-import Navbar from './navbar';
-import { Room } from './room';
+import { Id } from '../../../../convex/_generated/dataModel';
+import Document from './document';
+import { auth } from '@clerk/nextjs/server';
+import { preloadQuery } from 'convex/nextjs';
+import { api } from '../../../../convex/_generated/api';
 
 interface DocumentIdParams {
-  params: Promise<{ documentId: string }>;
+  params: Promise<{ documentId: Id<'documents'> }>;
 }
 
-export default memo(async function DocumentIdPage({
-  params
-}: DocumentIdParams) {
-  // 在服务器端我们可以这样获取动态路由参数
+const DocumentIdPage = memo(async ({ params }: DocumentIdParams) => {
   const { documentId } = await params;
-  // 如果是在客户端，我们可以通过use方法获取动态路由参数，use方法是React 19推出的新的方法，可以
-  // 帮助我们解析promise对象，获取promise的resolve值
-  // const { documentId } = React.use(params);
-  console.log('🚀 ~ DocumentIdPage ~ documentId:', documentId);
-  return (
-    <Room>
-      <div className="min-h-screen bg-[#FAFBFD]">
-        <div className="flex flex-col px-4 gap-y-2 fixed top-0 left-0 right-0 z-10 bg-[#FAFBFD] print:hidden">
-          <Navbar />
-          <ToolBar />
-        </div>
-        <div className="pt-[106px] print:pt-0">
-          <Editor />
-        </div>
-      </div>
-    </Room>
+  const { getToken } = await auth();
+  const token = (await getToken({ template: 'convex' })) ?? undefined;
+  if (!token) {
+    throw new Error('未授权');
+  }
+  const preloadedDocument = await preloadQuery(
+    api.documents.getById,
+    {
+      id: documentId
+    },
+    { token }
   );
+
+  // 检查预加载的文档是否存在
+  // 注意：preloadedDocument 是 Convex 的预加载查询对象，不是文档数据本身
+
+  return <Document preloadedDocument={preloadedDocument} />;
 });
+
+export default DocumentIdPage;
