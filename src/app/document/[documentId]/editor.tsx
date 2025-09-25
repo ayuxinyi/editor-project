@@ -41,6 +41,8 @@ const Editor = memo(({ initialContent }: EditorProps) => {
   });
 
   const editor = useEditor({
+    // 自动获得焦点
+    autofocus: true,
     // 当editor实例创建时，将其设置到store中
     onCreate: ({ editor }) => setEditor(editor),
     // 当editor实例销毁时，将store中的editor实例设置为null
