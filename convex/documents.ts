@@ -134,8 +134,17 @@ export const updateById = mutation({
     }
     const isOwner = document.ownerId === user.subject;
     if (!isOwner) {
-      throw new ConvexError('没有权限删除文档');
+      throw new ConvexError('没有权限修改文档');
     }
     return await ctx.db.patch(args.id, { title: args.title });
+  }
+});
+
+export const getById = query({
+  args: {
+    id: v.id('documents')
+  },
+  async handler(ctx, { id }) {
+    return await ctx.db.get(id);
   }
 });

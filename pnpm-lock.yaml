@@ -23,6 +23,9 @@ importers:
       '@liveblocks/client':
         specifier: ^3.7.1
         version: 3.7.1(@types/json-schema@7.0.15)
+      '@liveblocks/node':
+        specifier: ^3.7.1
+        version: 3.7.1(@types/json-schema@7.0.15)
       '@liveblocks/react':
         specifier: ^3.7.1
         version: 3.7.1(@types/json-schema@7.0.15)(@types/react-dom@19.1.9(@types/react@19.1.13))(@types/react@19.1.13)(react@19.1.0)
@@ -708,6 +711,9 @@ packages:
     resolution: {integrity: sha512-xeASXOU5RnyJh9uZiac5w1HqR7D2MzD6hX+hLfkQY2a/rFip9kDi3WXY7J2TXqs8VB+Do3e0bYKATwGaZoOlvw==}
     peerDependencies:
       '@types/json-schema': ^7
+
+  '@liveblocks/node@3.7.1':
+    resolution: {integrity: sha512-QqmNHR2TWiCml4GTOQSRrmOEVVF88uARfTRpoAyfKOQwmhkdpCTFOlEJ6h8gX5w6+T1BIxYHOeJF0e25GD2g7Q==}
 
   '@liveblocks/react-tiptap@3.7.1':
     resolution: {integrity: sha512-rJyFUSFLHca+gHQod+iPt2XEcVUB0ztdoISc0RZC+USfbTdMwInk8JYmrZbEDfaKZe1I3d/jjXC3amkdGFsGPg==}
@@ -3024,6 +3030,15 @@ packages:
       sass:
         optional: true
 
+  node-fetch@2.7.0:
+    resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+
   nuqs@2.6.0:
     resolution: {integrity: sha512-EvIKBvfJeyL8n6lxfebxoAbkHJutNsxmy1oo4noFUYNUESbnecxWxgnxXoa0/4fYiFwdEuyMQx1Z9rV0h4bnkg==}
     peerDependencies:
@@ -3547,6 +3562,9 @@ packages:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
 
+  tr46@0.0.3:
+    resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
+
   ts-api-utils@2.1.0:
     resolution: {integrity: sha512-CUgTZL1irw8u29bzrOD/nH85jqyc74D6SshFgujOIA7osm2Rz7dYH77agkx7H4FBNxDq7Cjf+IjaX/8zwFW+ZQ==}
     engines: {node: '>=18.12'}
@@ -3639,6 +3657,12 @@ packages:
 
   w3c-keyname@2.2.8:
     resolution: {integrity: sha512-dpojBhNsCNN7T82Tm7k26A6G9ML3NkhDsnw9n/eoxSRlVBB4CEtIQ/KTCLI2Fwf3ataSXRhYFkQi3SlnFwPvPQ==}
+
+  webidl-conversions@3.0.1:
+    resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
+
+  whatwg-url@5.0.0:
+    resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
 
   which-boxed-primitive@1.1.1:
     resolution: {integrity: sha512-TbX3mj8n0odCBFVlY8AxkqcHASw3L60jIuF8jFP78az3C2YhmGvqbHBpAjTRH2/xqYunrJ9g1jSyjCjpoWzIAA==}
@@ -4070,6 +4094,16 @@ snapshots:
   '@liveblocks/core@3.7.1(@types/json-schema@7.0.15)':
     dependencies:
       '@types/json-schema': 7.0.15
+
+  '@liveblocks/node@3.7.1(@types/json-schema@7.0.15)':
+    dependencies:
+      '@liveblocks/core': 3.7.1(@types/json-schema@7.0.15)
+      '@stablelib/base64': 1.0.1
+      fast-sha256: 1.3.0
+      node-fetch: 2.7.0
+    transitivePeerDependencies:
+      - '@types/json-schema'
+      - encoding
 
   '@liveblocks/react-tiptap@3.7.1(d95ad66e063c59445673fb5c99954a03)':
     dependencies:
@@ -6539,6 +6573,10 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
+  node-fetch@2.7.0:
+    dependencies:
+      whatwg-url: 5.0.0
+
   nuqs@2.6.0(next@15.5.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
     dependencies:
       '@standard-schema/spec': 1.0.0
@@ -7171,6 +7209,8 @@ snapshots:
     dependencies:
       is-number: 7.0.0
 
+  tr46@0.0.3: {}
+
   ts-api-utils@2.1.0(typescript@5.9.2):
     dependencies:
       typescript: 5.9.2
@@ -7310,6 +7350,13 @@ snapshots:
       d3-timer: 3.0.1
 
   w3c-keyname@2.2.8: {}
+
+  webidl-conversions@3.0.1: {}
+
+  whatwg-url@5.0.0:
+    dependencies:
+      tr46: 0.0.3
+      webidl-conversions: 3.0.1
 
   which-boxed-primitive@1.1.1:
     dependencies:
