@@ -1,4 +1,4 @@
-import { type ColorResult, SketchPicker } from 'react-color';
+import { ColorResult, SketchPicker } from 'react-color';
 import { useEditorStore } from '@/stores/use-editor-store';
 import React, { memo } from 'react';
 import {
