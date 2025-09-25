@@ -8,8 +8,9 @@ import {
 } from '@liveblocks/react/suspense';
 import { useParams } from 'next/navigation';
 import FullscreenLoader from '@/components/fullscreen-loader';
-import { getUsers } from './action';
+import { getDocuments, getUsers } from './action';
 import { toast } from 'sonner';
+import { Id } from '../../../../convex/_generated/dataModel';
 
 export function Room({ children }: { children: ReactNode }) {
   const params = useParams<{ documentId: string }>();
@@ -43,13 +44,26 @@ export function Room({ children }: { children: ReactNode }) {
 
   return (
     <LiveblocksProvider
-      authEndpoint="/api/liveblocks-auth"
+      authEndpoint={async () => {
+        const endpoint = '/api/liveblocks-auth';
+        const room = params.documentId as string;
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          body: JSON.stringify({ room })
+        });
+        return await response.json();
+      }}
       throttle={16}
+      // 定义用户列表解析函数，用于根据用户ID列表获取用户信息
+      // 展示用户具体的姓名，头像
       resolveUsers={({ userIds }) =>
         userIds.map(
           userId => users.find(user => user.id === userId) ?? undefined
         )
       }
+      // 定义提及建议解析函数，用于根据输入文本获取提及建议用户ID列表，
+      // 这里根据用户名称进行模糊匹配，当用户@时，根据输入的文本进行匹配，返回匹配的用户ID列表
       resolveMentionSuggestions={({ text }) => {
         let filteredUsers = users;
         if (text) {
@@ -60,9 +74,19 @@ export function Room({ children }: { children: ReactNode }) {
 
         return filteredUsers.map(user => user.id);
       }}
-      resolveRoomsInfo={() => []}
+      resolveRoomsInfo={async ({ roomIds }) => {
+        const documents = await getDocuments(roomIds as Id<'documents'>[]);
+        return documents.map(document => ({
+          id: document.id,
+          name: document.name
+        }));
+      }}
     >
-      <RoomProvider id={params.documentId}>
+      <RoomProvider
+        id={params.documentId}
+        // 定义房间初始存储，用于设置文档的左侧和右侧边距
+        initialStorage={{ leftMargin: 56, rightMargin: 56 }}
+      >
         <ClientSideSuspense
           fallback={<FullscreenLoader label="文档加载中..." />}
         >

@@ -1,9 +1,6 @@
 'use client';
 import React, { memo } from 'react';
-import {
-  useLiveblocksExtension,
-  FloatingToolbar
-} from '@liveblocks/react-tiptap';
+import { useLiveblocksExtension } from '@liveblocks/react-tiptap';
 import { useEditor, EditorContent, Extension } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { TaskItem, TaskList } from '@tiptap/extension-list';
@@ -19,6 +16,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import { FontSizeExtension, LineHeightExtension } from '@/extensions';
 import Ruler from './ruler';
 import { Threads } from './threads';
+import { useStorage } from '@liveblocks/react/suspense';
 
 // 在Next.js中，默认所有组件都是服务器组件，如果想要在客户端使用Tiptap，需要将组件标记为"use client"
 // 这将告诉Next.js将该组件渲染为客户端组件，而不是服务器组件
@@ -26,6 +24,10 @@ import { Threads } from './threads';
 const Editor = memo(() => {
   // 通过zustand store提供的setEditor方法，将editor实例设置到store中
   const { setEditor } = useEditorStore();
+
+  // 从存储中获取文档的左侧和右侧边距
+  const leftMargin = useStorage(root => root.leftMargin);
+  const rightMargin = useStorage(root => root.rightMargin);
 
   const liveblocks = useLiveblocksExtension();
 
@@ -48,7 +50,9 @@ const Editor = memo(() => {
     onTransaction: ({ editor }) => setEditor(editor),
     editorProps: {
       attributes: {
-        style: 'padding-left:56px;padding-right:56px;',
+        style: `padding-left:${leftMargin ?? 56}px;padding-right:${
+          rightMargin ?? 56
+        }px;`,
         class:
           'focus:outline-none print:border-0 bg-white border border-[#C7C7C7] flex flex-col min-h-[1054px] w-[816px] pt-10 pr-14 pb-10 cursor-text'
       }
